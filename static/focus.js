@@ -22,22 +22,34 @@ async function run() {
 
 run();
 
-function sendRequest(url, callback) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
+// function sendRequest(url, callback) {
+//     const xhr = new XMLHttpRequest();
+//     xhr.open("GET", url, true);
 
-    return new Promise((resolve, reject) => {
-        xhr.open("GET", url, true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    resolve(JSON.parse(xhr.response));
-                }
+//     return new Promise((resolve, reject) => {
+//         xhr.open("GET", url, true);
+//         xhr.onreadystatechange = function () {
+//             if (xhr.readyState === XMLHttpRequest.DONE) {
+//                 if (xhr.status === 200) {
+//                     resolve(JSON.parse(xhr.response));
+//                 }
+//             }
+//         };
+
+//         xhr.send();
+//     })
+// }
+
+function sendRequest(url) {
+    return fetch(url)
+        .then(response => {
+            console.log('Response object:', response);
+            if (!response.ok) {
+                alert(`Ошибка запроса: ${response.status} ${response.statusText}`);
+                return Promise.reject(new Error(`Status ${response.status}`));
             }
-        };
-
-        xhr.send();
-    })
+            return response.json();
+        });
 }
 
 function reqsToMap(requisites) {
