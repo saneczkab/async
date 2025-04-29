@@ -7,19 +7,17 @@ const API = {
 
 async function run() {
     try {
-        const [orgOgrns, requisites, analytics, buh] = await Promise.all([
-            sendRequest(API.organizationList),
-            sendRequest(API.orgReqs),
-            sendRequest(API.analytics),
-            sendRequest(API.buhForms),
-        ]);
-
+        const orgOgrns = await sendRequest(API.organizationList);
         const ogrns = orgOgrns.join(",");
 
+        const [requisites, analytics, buh] = await Promise.all([
+            sendRequest(`${API.orgReqs}?ogrn=${ogrns}`),
+            sendRequest(`${API.analytics}?ogrn=${ogrns}`),
+            sendRequest(`${API.buhForms}?ogrn=${ogrns}`)
+        ]);
+
         const orgsMap = reqsToMap(requisites);
-
         addInOrgsMap(orgsMap, analytics, "analytics");
-
         addInOrgsMap(orgsMap, buh, "buhForms");
         render(orgsMap, orgOgrns);
     } catch (error) {
